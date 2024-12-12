@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polars vs Pandas downloads from PyPI</title>
+    <style>
+
+        h1 {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 20px;
+            margin-bottom: 80px;
+        }
+
+        #stats {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .emoji {
+            font-size: 60px;
+            margin-right: 10px;
+        }
+
+        .ratio {
+            font-size: 60px;
+            font-weight: bold;
+        }
+
+        .downloads {
+            font-size: 14px;
+            color: gray;
+        }
+
+        .stat {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Polars vs Pandas downloads from PyPI</h1>
+    <div id="stats">
+        Loading stats...
+    </div>
+
+    <script>
+        const gistUrl = 'https://gist.githubusercontent.com/benkulcsar/55cabe90eac0e893bdc47685c9551783/raw/da81ab2fceb01d1133c675784f53c0169251dc9d/rustybears.json';
+
+        fetch(gistUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                const pandasDownloads = data.pandas;
+                const pandasRatio = data.pandas_ratio;
+                const polarsDownloads = data.polars;
+                const polarsRatio = data.polars_ratio;
+
+                const customText = `
+                    <div class="stat">
+                        <span class="emoji">🐻‍❄️</span>
+                        <span class="ratio">${polarsRatio}</span>
+                        <div class="downloads">(${polarsDownloads})</div>
+                    </div>
+                    <div class="stat">
+                        <span class="emoji">🐼</span>
+                        <span class="ratio">${pandasRatio}</span>
+                        <div class="downloads">(${pandasDownloads})</div>
+                    </div>
+                `;
+
+                document.getElementById('stats').innerHTML = customText;
+            })
+            .catch(error => {
+                console.error('Error fetching Gist data:', error);
+                document.getElementById('stats').textContent = 'Failed to load stats.';
+            });
+    </script>
+</body>
+</html>
