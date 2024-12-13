@@ -3,20 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polars vs Pandas downloads from PyPI</title>
+    <title>Popularity of Rust-Based Python Packages on PyPI</title>
     <style>
-
         h1 {
             text-align: center;
             font-family: Arial, sans-serif;
             margin-top: 20px;
-            margin-bottom: 80px;
+            margin-bottom: 30px;
         }
 
         #stats {
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 20px;
+        }
+
+        .section {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 50px;
+            margin-bottom: 10px;
+            color: #333;
+            display: block;
+        }
+
+        .stat {
+            margin: 40px 0;
+            padding: 10px 0;
         }
 
         .emoji {
@@ -40,13 +55,13 @@
     </style>
 </head>
 <body>
-    <h1>Polars vs Pandas downloads from PyPI</h1>
+    <h1>Popularity of Rust-Based Python Packages on PyPI</h1>
     <div id="stats">
         Loading stats...
     </div>
 
     <script>
-        const gistUrl = 'https://gist.githubusercontent.com/benkulcsar/55cabe90eac0e893bdc47685c9551783/raw/da81ab2fceb01d1133c675784f53c0169251dc9d/rustybears.json';
+        const gistUrl = 'https://gist.githubusercontent.com/benkulcsar/55cabe90eac0e893bdc47685c9551783/raw/rustybears.json';
 
         fetch(gistUrl)
             .then(response => {
@@ -56,14 +71,19 @@
                 return response.json();
             })
             .then(data => {
-
                 const pandasDownloads = data.pandas;
                 const pandasRatio = data.pandas_ratio;
                 const polarsDownloads = data.polars;
                 const polarsRatio = data.polars_ratio;
 
+                const poetryDownloads = data.poetry;
+                const poetryRatio = data.poetry_ratio;
+                const uvDownloads = data.uv;
+                const uvRatio = data.uv_ratio;
+
                 const customText = `
                     <div class="stat">
+                        <span class="section">Polars vs Pandas</span><br><br>
                         <span class="emoji">🐻‍❄️</span>
                         <span class="ratio">${polarsRatio}</span>
                         <div class="downloads">(${polarsDownloads})</div>
@@ -72,6 +92,17 @@
                         <span class="emoji">🐼</span>
                         <span class="ratio">${pandasRatio}</span>
                         <div class="downloads">(${pandasDownloads})</div>
+                    </div>
+                    <div class="stat">
+                        <span class="section">uv vs Poetry</span><br><br>
+                        <span class="emoji">🟪</span>
+                        <span class="ratio">${uvRatio}</span>
+                        <div class="downloads">(${uvDownloads})</div>
+                    </div>
+                    <div class="stat">
+                        <span class="emoji">🖋️</span>
+                        <span class="ratio">${poetryRatio}</span>
+                        <div class="downloads">(${poetryDownloads})</div>
                     </div>
                 `;
 
