@@ -55,3 +55,7 @@ module:
   hugoVersion:
     extended: false
     min: "0.116.0"
+
+caches:
+  images:
+    dir: :cacheDir/images
