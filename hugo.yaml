@@ -33,6 +33,10 @@ markup:
     # (enable to allow ^ and ~ for superscript and subscript)
     superscript: true
     unsafe: true
+    parser:
+      attribute: true
+    renderer:
+      unsafe: true
 ignoreFiles:
   - "themes/terminal/content"
 # outputs:
