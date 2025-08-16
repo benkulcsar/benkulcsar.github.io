@@ -1,0 +1,16 @@
+{{- $id := (.Get "id") | default "default" -}}
+{{- $url := .Get "url" -}}
+
+<div id="fetch-{{ $id }}">Loading…</div>
+<script>
+(function () {
+  const el = document.getElementById("fetch-{{ $id }}");
+  const url = {{ $url | jsonify | safeJS }};  // ← no extra quotes
+  if (!el || !url) return;
+
+  fetch(url, { referrerPolicy: "origin", cache: "no-store" })
+    .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.text(); })
+    .then(text => { el.textContent = text; })
+    .catch(err => { el.textContent = "Failed to load."; console.error("[fetch shortcode]", err); });
+})();
+</script>
