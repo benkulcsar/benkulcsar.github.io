@@ -9,6 +9,20 @@ url: "/projects.html"
 
 ## Projects
 
+### Penguify (WIP)
+
+[Repo](https://github.com/benkulcsar/penguify)
+
+[Check out the WIP Page](https://benkulcsar.github.io/penguify.html)
+
+Illustrates Hacker News with penguins 🐧 
+
+{{< figure
+    src="/images/penguify.png"
+>}}
+
+<br />
+
 ### Llamachat (2025)
 
 [Repo](https://github.com/benkulcsar/llamachat)

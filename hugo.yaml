@@ -13,6 +13,10 @@ menus:
       name: Projects
       url: /projects.html
       weight: 30
+    - identifier: penguify
+      name: Penguify
+      url: /penguify.html
+      weight: 40
 pagination:
   pagerSize: 10
 permalinks:

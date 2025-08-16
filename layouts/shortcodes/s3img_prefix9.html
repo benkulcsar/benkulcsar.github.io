@@ -1,0 +1,258 @@
+{{- /* s3img_prefix9.html — 3x3 grid fed by manifest of prefixes + optional per-prefix meta.json, with base URL support */ -}}
+{{- $id := .Get "id" | default (printf "s3p9-%d" (now.UnixNano)) -}}
+{{- $base := .Get "base" | default "" -}}
+{{- $manifest := .Get "manifest" | default "/manifest2.json" -}}
+{{- $defaultPrefix := .Get "defaultPrefix" | default "" -}}
+{{- $cacheBust := .Get "cacheBust" | default "true" -}}
+{{- $tile := .Get "tile" | default "256" -}}
+
+<div id="wrap-{{ $id }}"
+     data-id="{{ $id }}"
+     data-base="{{ $base }}"
+     data-manifest="{{ $manifest }}"
+     data-default-prefix="{{ $defaultPrefix }}"
+     data-cache-bust="{{ $cacheBust }}"
+     data-tilesize="{{ $tile }}">
+
+  <div style="display:flex;gap:.5rem;align-items:center;">
+    <label for="sel-{{ $id }}" style="font-weight:600;">Day:</label>
+    <select id="sel-{{ $id }}" 
+        style="
+          padding:.25rem .5rem;
+          border:1px solid #ddd;
+          border-radius:.375rem;
+          background-color:inherit;
+          color:inherit;
+        ">
+    </select>
+    <span id="status-{{ $id }}" style="color:#666;font-size:.9em;"></span>
+  </div>
+
+  <div id="grid-{{ $id }}"
+       style="display:grid;grid-template-columns:repeat(3, {{ $tile }}px);gap:.5rem;margin-top:.75rem;justify-content:center;">
+    {{- range $i, $ := (seq 0 8) -}}
+    <figure style="margin:0;width:{{ $tile }}px;">
+      <img id="img-{{ $id }}-{{ $i }}"
+           alt=""
+           loading="eager"
+           style="width:auto;height:auto;max-width:100%;border:1px solid #eee;border-radius:.25rem;display:block;visibility:hidden" />
+      <figcaption id="cap-{{ $id }}-{{ $i }}"
+                  style="display:none;color:#444;font-size:1em;margin-top:.05rem;text-align:center;line-height:1.25;"></figcaption>
+    </figure>
+    {{- end -}}
+  </div>
+</div>
+
+<script>
+(function () {
+  const root = document.getElementById("wrap-{{ $id }}");
+  const id = root?.dataset.id || "{{ $id }}";
+  const baseInput = (root?.dataset.base || "").trim();
+  const manifestPath = root?.dataset.manifest || "/manifest2.json";
+  const defaultPrefixRaw = (root?.dataset.defaultPrefix || "").replace(/\/+$/, "");
+  const doCacheBust = (root?.dataset.cacheBust || "true") === "true";
+
+  const sel = document.getElementById("sel-{{ $id }}");
+  const statusEl = document.getElementById("status-{{ $id }}");
+
+  function showStatus(msg) { if (statusEl) statusEl.textContent = msg || ""; }
+
+  function normalizeBase(b) {
+    if (!b) return "";
+    let trimmed = b.replace(/\/+$/, "");
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // Treat bare domains or hosts as HTTPS by default
+    return "https://" + trimmed;
+  }
+  const base = normalizeBase(baseInput);
+
+  function makeAbs(baseUrl, path) {
+    if (!path) return "";
+    if (/^https?:\/\//i.test(path)) return path;      // already absolute
+    if (!baseUrl) return path;                        // relative, no base given
+    if (path.startsWith("/")) return baseUrl + path;  // root-relative to base
+    return baseUrl + "/" + path;                      // simple join
+  }
+
+  function cbUrl(url) {
+    if (!doCacheBust) return url;
+    return url + (url.includes("?") ? "&" : "?") + "_cb=" + Date.now();
+  }
+
+  function setTile(i, url, alt, linkMeta) {
+    const img = document.getElementById(`img-{{ $id }}-${i}`);
+    const cap = document.getElementById(`cap-{{ $id }}-${i}`);
+    if (!img) return;
+
+    img.style.visibility = "hidden";
+    img.removeAttribute("src");
+    img.alt = alt || "";
+
+    // Optional link wrapper (idempotent)
+    if (img.parentElement && img.parentElement.tagName === "A") {
+      const a = img.parentElement;
+      if (linkMeta?.url) {
+        a.href = linkMeta.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+      } else {
+        a.replaceWith(img);
+      }
+    } else if (linkMeta?.url) {
+      const a = document.createElement("a");
+      a.href = linkMeta.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      img.replaceWith(a);
+      a.appendChild(img);
+    }
+
+    img.onload = () => { img.style.visibility = "visible"; };
+    img.onerror = () => {
+      if (cap) { cap.style.display = "block"; cap.textContent = "✖"; }
+      img.style.visibility = "hidden";
+    };
+    img.src = cbUrl(url);
+
+    // Caption
+    if (cap) {
+      if (linkMeta?.title || linkMeta?.url) {
+        cap.style.display = "block";
+        const title = (linkMeta.title || linkMeta.url || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        if (linkMeta.url) {
+          const safeUrl = linkMeta.url;
+          cap.innerHTML = `<a href="${safeUrl}" target="_blank" rel="noopener" style="text-decoration:none;">${title}</a>`;
+        } else {
+          cap.textContent = title;
+        }
+      } else {
+        cap.style.display = "none";
+        cap.textContent = "";
+      }
+    }
+  }
+
+  async function loadMeta(prefixAbs) {
+    try {
+      const res = await fetch(cbUrl(`${prefixAbs}/meta.json`), { cache: "no-cache" });
+      if (!res.ok) return [];
+      const data = await res.json();
+      if (!Array.isArray(data?.images)) return [];
+      return data.images.slice(0, 9).map(x => ({
+        title: typeof x?.title === "string" ? x.title : "",
+        url:   typeof x?.url   === "string" ? x.url   : ""
+      }));
+    } catch {
+      return [];
+    }
+  }
+
+  async function loadPrefix(prefixAbs, label) {
+    if (!prefixAbs) return;
+    showStatus("Loading…");
+
+    const metaPromise = loadMeta(prefixAbs);
+
+    for (let i = 0; i < 9; i++) {
+      const url = `${prefixAbs}/${i}.jpg`;
+      const alt = `${label || prefixAbs} #${i}`;
+      setTile(i, url, alt, null);
+    }
+
+    const metas = await metaPromise;
+    for (let i = 0; i < 9; i++) {
+      const meta = metas[i] || null;
+      if (meta && (meta.title || meta.url)) {
+        const img = document.getElementById(`img-{{ $id }}-${i}`);
+        if (img && meta.title) img.alt = meta.title;
+
+        const cap = document.getElementById(`cap-{{ $id }}-${i}`);
+        if (cap) {
+          cap.style.display = "block";
+          const title = (meta.title || meta.url || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          cap.innerHTML = meta.url
+            ? `<a href="${meta.url}" target="_blank" rel="noopener" style="text-decoration:none;">${title}</a>`
+            : title;
+        }
+
+        if (meta.url) {
+          const a = document.createElement("a");
+          a.href = meta.url;
+          a.target = "_blank";
+          a.rel = "noopener";
+          const current = document.getElementById(`img-{{ $id }}-${i}`);
+          if (current) {
+            if (current.parentElement && current.parentElement.tagName === "A") {
+              current.parentElement.href = meta.url;
+            } else {
+              current.replaceWith(a);
+              a.appendChild(current);
+            }
+          }
+        }
+      }
+    }
+
+    showStatus("");
+  }
+
+  (async function init() {
+    try {
+      showStatus("Loading sets…");
+
+      // Resolve manifest against base (works with /path.json, relative, or absolute URLs)
+      const manifestUrl = makeAbs(base, manifestPath);
+      const res = await fetch(cbUrl(manifestUrl), { cache: "no-cache" });
+      if (!res.ok) throw new Error("Manifest not found");
+      const m = await res.json();
+      const items = Array.isArray(m?.items) ? m.items : [];
+
+      function resolvePrefix(p) { return makeAbs(base, (p || "").replace(/\/+$/, "")); }
+
+      // Normalize items: { label, prefixAbs }
+      const normalized = items
+        .filter(it => it && typeof it.prefix === "string")
+        .map(it => ({
+          label: typeof it.label === "string" ? it.label : it.prefix,
+          prefixRaw: it.prefix.replace(/\/+$/, ""),
+          prefixAbs: resolvePrefix(it.prefix)
+        }));
+
+      // Populate dropdown with ABSOLUTE values
+      sel.innerHTML = "";
+      normalized.forEach(it => {
+        const opt = document.createElement("option");
+        opt.value = it.prefixAbs;
+        opt.textContent = it.label;
+        sel.appendChild(opt);
+      });
+
+      // Handle defaultPrefix (can be raw like "2025-08-18" or full URL)
+      const defaultAbs = defaultPrefixRaw
+        ? (/^https?:\/\//i.test(defaultPrefixRaw) ? defaultPrefixRaw : resolvePrefix(defaultPrefixRaw))
+        : "";
+
+      if (defaultAbs) {
+        const idx = normalized.findIndex(it => it.prefixAbs === defaultAbs);
+        if (idx >= 0) sel.selectedIndex = idx;
+      }
+      if (sel.selectedIndex < 0 && sel.options.length > 0) sel.selectedIndex = 0;
+
+      // Initial load
+      const opt = sel.options[sel.selectedIndex];
+      if (opt) await loadPrefix(opt.value, opt.textContent);
+
+      // On change
+      sel.addEventListener("change", async () => {
+        const o = sel.options[sel.selectedIndex];
+        await loadPrefix(o.value, o.textContent);
+      });
+
+      showStatus("");
+    } catch (e) {
+      console.error("[s3img_prefix9] init error:", e);
+      showStatus("Failed to load sets.");
+    }
+  })();
+})();
+</script>
