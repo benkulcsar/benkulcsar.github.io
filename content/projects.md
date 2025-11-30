@@ -9,11 +9,13 @@ url: "/projects.html"
 
 ## Projects
 
-### Penguify (WIP)
+### Penguify (2025)
 
 [Repo](https://github.com/benkulcsar/penguify)
 
-[Check out the WIP Page](https://benkulcsar.github.io/penguify.html)
+[Check out the Page](https://benkulcsar.github.io/penguify.html)
+
+From WIP to RIP: as of 18 November 2025, the party is over. The free image generation model in the Gemini API has been discontinued.
 
 Illustrates Hacker News with penguins 🐧 
 
