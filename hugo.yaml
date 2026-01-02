@@ -17,10 +17,6 @@ menus:
       name: Penguify
       url: /penguify.html
       weight: 40
-    - identifier: chippy
-      name: Chippy
-      url: /chippy.html
-      weight: 50
 pagination:
   pagerSize: 10
 permalinks:

@@ -26,4 +26,10 @@ Email: benkulcsar.apps@gmail.com
 
 **Last Updated:** 2 January 2026
 
-Chippy Shippyson does not collect, store, or transmit any personal data. The game operates entirely on your device.
+Chippy Shippyson does not collect or store personal data directly. The game operates entirely on your device.
+
+Third-party services integrated into the app may collect limited data for functionality and analytics:
+- **Expo**: Crash reports and diagnostics
+- **RevenueCat**: Purchase validation and anonymous device identifiers
+
+This data is processed according to each provider's privacy policy. No personal information is sold or shared for advertising purposes.
