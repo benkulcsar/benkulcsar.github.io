@@ -15,11 +15,22 @@ I build data platforms and products that continue to run and scale even after I 
 ## Recent Data Jobs
 
 {{< figure
+    src="/images/revenuecat-icon.svg"
+    width="50"
+>}}
+### RevenueCat
+#### Senior Data Engineer (2025—)
+
+Helping developers make more money.
+
+<br />
+
+{{< figure
     src="/images/hotjar-icon.svg"
     width="50"
 >}}
 ### Hotjar
-#### Senior Data Engineer 2022—
+#### Senior Data Engineer (2022—2025)
 
 I learnt how to do proper, hands-on data engineering at Hotjar (now part of Contentsquare). Finally, I was building the data infrastructure instead of just using it.
 
