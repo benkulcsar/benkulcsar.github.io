@@ -8,13 +8,13 @@ url: "/chippy.html"
 ---
 
 {{< figure
-    src="/images/chippy.png"
+    src="/images/chippy_v2.png"
     width="256"
 >}}
 
 ### Description
 
-Chippy Shippyson is a cute mobile game where you control a pirate kitten exploring indoor and outdoor spaces. Collect milk bottles and yarn balls, avoid foxes and showers, and race against the clock across increasingly challenging levels.
+A cute mobile game where you control a pirate kitten exploring indoor and outdoor spaces. Collect items like milk bottles and yarn balls, avoid hazards like foxes and showers, and race against the clock across increasingly challenging levels.
 
 ### Support
 
