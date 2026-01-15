@@ -8,28 +8,31 @@ url: "/chippy.html"
 ---
 
 {{< figure
-    src="/images/chippy_v2.png"
-    width="256"
+    src="/images/chippy_v99_v2_final.png"
 >}}
 
-### Description
+Take control of **Chippy Shippyson**, the cute pirate kitten on a quest for treasure! Dash through indoor hideouts and outdoor adventures to help Chippy get home!
 
-A cute mobile game where you control a pirate kitten exploring indoor and outdoor spaces. Collect items like milk bottles and yarn balls, avoid hazards like foxes and showers, and race against the clock across increasingly challenging levels.
+{{< rawhtml >}}
+<a href="https://apps.apple.com/us/app/chippy-shippyson/id6757261757" target="_blank" rel="noopener">
+  <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store" style="height: 60px;">
+</a>
+{{< /rawhtml >}}
 
-### Support
+## 💬 Support
 
-Need help or have feedback about Chippy Shippyson?
+Stuck on a level? Found a bug? Just want to say hi?
 
-Email: benkulcsar.apps@gmail.com
+📧 **benkulcsar.apps@gmail.com**
 
-### Privacy Policy
+## 🔒 Privacy Policy
 
-**Last Updated:** 2 January 2026
+**Last Updated:** 15 January 2026
 
-Chippy Shippyson does not collect or store personal data directly. The game operates entirely on your device.
+Chippy Shippyson does not collect or store personal data. The game runs entirely on your device.
 
-Third-party services integrated into the app may collect limited data for functionality and analytics:
-- **Expo**: Crash reports and diagnostics
-- **RevenueCat**: Purchase validation and anonymous device identifiers
+Third-party services may collect limited data for functionality:
+- **Expo** — Crash reports and diagnostics
+- **RevenueCat** — Purchase validation and anonymous device IDs
 
-This data is processed according to each provider's privacy policy. No personal information is sold or shared for advertising purposes.
+No personal information is sold or shared for advertising.
