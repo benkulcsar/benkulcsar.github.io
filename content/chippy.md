@@ -25,6 +25,10 @@ Stuck on a level? Found a bug? Just want to say hi?
 
 📧 **benkulcsar.apps@gmail.com**
 
+## 📜 Terms of Use
+
+This app is licensed under Apple's {{< rawhtml >}}<a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" target="_blank" rel="noopener">Standard End User License Agreement (EULA)</a>{{< /rawhtml >}}.
+
 ## 🔒 Privacy Policy
 
 **Last Updated:** 15 January 2026
