@@ -9,6 +9,18 @@ url: "/projects.html"
 
 ## Projects
 
+### Chippy Shippyson (2026)
+
+[Check out the Page](https://benkulcsar.github.io/chippy.html)
+
+A mobile game where you take control of Chippy Shippyson, the cute pirate kitten on a quest for treasure! Dash through indoor hideouts and outdoor adventures to help Chippy get home!
+
+{{< figure
+    src="/images/chippy_v99_v2_final.png"
+>}}
+
+<br />
+
 ### Penguify (2025)
 
 [Repo](https://github.com/benkulcsar/penguify)
@@ -21,6 +33,7 @@ Illustrates Hacker News with penguins 🐧
 
 {{< figure
     src="/images/penguify.png"
+    width="821"
 >}}
 
 <br />
